@@ -1,0 +1,18 @@
+{
+  "gitzone": {
+    "projectType": "npm",
+    "module": {
+      "githost": "gitlab.com",
+      "gitscope": "pushrocks",
+      "gitrepo": "smartssr",
+      "shortDescription": "a smart server side renderer supporting shadow dom",
+      "npmPackagename": "@pushrocks/smartssr",
+      "license": "MIT",
+      "projectDomain": "push.rocks"
+    }
+  },
+  "npmci": {
+    "npmGlobalTools": [],
+    "npmAccessLevel": "public"
+  }
+}
