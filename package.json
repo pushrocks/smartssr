@@ -1,6 +1,6 @@
 {
   "name": "@pushrocks/smartssr",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "a smart server side renderer supporting shadow dom",
   "main": "dist/index.js",
