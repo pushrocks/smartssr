@@ -11,7 +11,7 @@ tap.test('should start the smartssr instance', async () => {
   await testSSRInstance.start();
 });
 
-tap.test('should render central.eu', async (tools) => {
+tap.test('should render central.eu', async tools => {
   await testSSRInstance.renderPage('https://central.eu');
 });
 

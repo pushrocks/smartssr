@@ -18,7 +18,7 @@ export function serializeFunction(rootNode) {
     styleTemplate = styleTemplate.replace(/\]\)/g, `]`);
     styleTemplate = styleTemplate.replace(/:host/g, `.${uuidID}`);
     styleTemplate = styleTemplate.replace(/:host/g, `.${uuidID}`);
-    
+
     styleTemplate = styleTemplate.replace(/{[ \t\n]+\./g, `{\n\n.${uuidID} .`);
     styleTemplate = styleTemplate.replace(/}[ \t\n]+img/g, `}\n\n.${uuidID} img`);
     styleTemplate = styleTemplate.replace(/}[ \t\n]+div/g, `}\n\n.${uuidID} div`);

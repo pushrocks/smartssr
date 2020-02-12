@@ -32,11 +32,14 @@ export class SmartSSR {
       const pageContent = await page.content();
       const renderedPageString = pageContent;
       resultDeferred.resolve(renderedPageString);
-      plugins.smartfile.memory.toFsSync(renderedPageString, plugins.path.join(paths.noGitDir, 'test.html'));
+      plugins.smartfile.memory.toFsSync(
+        renderedPageString,
+        plugins.path.join(paths.noGitDir, 'test.html')
+      );
     });
 
     await page.goto(urlArg);
-    const result =  await resultDeferred.promise;
+    const result = await resultDeferred.promise;
     page.close();
     return result;
   }
