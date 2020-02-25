@@ -19,8 +19,8 @@ tap.test('should render lossless.com', async () => {
   await testSSRInstance.renderPage('https://lossless.com');
 });
 
-tap.test('should render https://lossless.gmbh', async () => {
-  await testSSRInstance.renderPage('https://lossless.gmbh');
+tap.skip.test('should render https://lossless.gmbh', async () => {
+  const renderedPage = await testSSRInstance.renderPage('https://lossless.gmbh');
 });
 
 tap.test('should stop the smartssr instacne', async () => {

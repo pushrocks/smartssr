@@ -23,8 +23,11 @@ export class SmartSSR {
 
   public async renderPage(urlArg: string) {
     const resultDeferred = plugins.smartpromise.defer<string>();
-    const page = await this.browser.newPage();
-    page.on('console', (event: any) => console.log(event._text));
+    const context = await this.browser.createIncognitoBrowserContext();
+    const page = await context.newPage();
+    page.on('console', msg => {
+      console.log(`${urlArg}: ${msg.text()}`);
+    });
 
     page.on('load', async (...args) => {
       // await plugins.smartdelay.delayFor(2000);
@@ -40,7 +43,9 @@ export class SmartSSR {
 
     await page.goto(urlArg);
     const result = await resultDeferred.promise;
-    page.close();
+    page.close().then(async () => {
+      await context.close();
+    });
     return result;
   }
 }

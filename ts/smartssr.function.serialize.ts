@@ -67,7 +67,7 @@ export function serializeFunction(rootNode) {
         node.appendChild(templateDom);
       }
     } catch (err) {
-      console.log('error:', err);
+      console.log('error:', err.message);
       console.log(node.tagName);
     }
   }
