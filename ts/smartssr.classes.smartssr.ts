@@ -22,6 +22,8 @@ export class SmartSSR {
   }
 
   public async renderPage(urlArg: string) {
+    const overallTimeMeasurement = new plugins.smarttime.HrtMeasurement();
+    overallTimeMeasurement.start();
     const resultDeferred = plugins.smartpromise.defer<string>();
     const context = await this.browser.createIncognitoBrowserContext();
     const page = await context.newPage();
@@ -41,11 +43,18 @@ export class SmartSSR {
       );
     });
 
+    const renderTimeMeasurement = new plugins.smarttime.HrtMeasurement();
+    renderTimeMeasurement.start();
     await page.goto(urlArg);
     const result = await resultDeferred.promise;
-    page.close().then(async () => {
-      await context.close();
-    });
+    renderTimeMeasurement.stop();
+
+    // lets clean up async
+    context.close();
+
+    overallTimeMeasurement.stop();
+    console.log(`Overall it took ${overallTimeMeasurement.milliSeconds} milliseconds to render ${urlArg}`);
+    console.log(`The rendering alone took ${renderTimeMeasurement.milliSeconds} milliseconds for ${urlArg}`)
     return result;
   }
 }
