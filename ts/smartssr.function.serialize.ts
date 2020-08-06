@@ -42,10 +42,17 @@ export function serializeFunction(rootNode) {
       const slots = nodeArg.shadowRoot.querySelectorAll('slot');
 
       // handle slot element
+      const slotsForMove: HTMLSlotElement[] = [];
       slots.forEach((slot) => {
-        nodeArg.childNodes.forEach((lightNode) => slot.parentNode.insertBefore(lightNode, slot));
-        slot.parentNode.removeChild(slot);
+        slotsForMove.push(slot);
       });
+
+      
+      for (const slot of slotsForMove) {
+        const slottedLightNodesForMove = [];
+        slot.assignedNodes().forEach((lightNode) => slottedLightNodesForMove.push(lightNode));
+        slottedLightNodesForMove.forEach((lightNode) => slot.parentNode.insertBefore(lightNode, slot));
+      }
 
       // lets modify the css
       const childNodes = nodeArg.shadowRoot.childNodes;
