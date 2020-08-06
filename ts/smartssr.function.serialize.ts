@@ -56,9 +56,6 @@ export function serializeFunction(rootNode) {
           if (childNode.tagName === 'STYLE') {
             childNode.textContent = prependCss(nodeUUID, childNode.textContent);
           } else {
-            if (nodeArg.tagName?.includes('ARTICLEGRID')) {
-              console.log('hello ' + childNode.id);
-            }
             serializeNode(childNode, logThis);
           }
           noteForAppending.push(childNode);

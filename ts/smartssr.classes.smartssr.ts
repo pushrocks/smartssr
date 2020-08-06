@@ -46,34 +46,26 @@ export class SmartSSR {
       console.log(`${urlArg}: ${msg.text()}`);
     });
 
-    page.on('load', async (...args) => {
-      await plugins.smartdelay.delayFor(5000);
-      let screenshotBuffer: Buffer;
-
-      if (this.options.debug) {
-        screenshotBuffer = await page.screenshot({
-          encoding: 'binary',
-        });
-      }
-
-      await page.$eval('body', serializeFunction);
-      const pageContent = await page.content();
-      const renderedPageString = pageContent;
-      resultDeferred.resolve(renderedPageString);
-
-      if (this.options.debug) {
-        plugins.smartfile.memory.toFsSync(
-          renderedPageString,
-          plugins.path.join(paths.noGitDir, 'test.html')
-        );
-        const fs = await import('fs');
-        fs.writeFileSync(plugins.path.join(paths.noGitDir, 'test.png'), screenshotBuffer);
-      }
-    });
-
     const renderTimeMeasurement = new plugins.smarttime.HrtMeasurement();
     renderTimeMeasurement.start();
-    await page.goto(urlArg);
+    await page.goto(urlArg, {
+      waitUntil: 'networkidle2',
+    });
+
+    let screenshotBuffer: Buffer;
+
+    if (this.options.debug) {
+      screenshotBuffer = await page.screenshot({
+        encoding: 'binary',
+      });
+    }
+
+    await page.$eval('body', serializeFunction);
+    const pageContent = await page.content();
+    const renderedPageString = pageContent;
+    resultDeferred.resolve(renderedPageString);
+
+
     const result = await resultDeferred.promise;
     renderTimeMeasurement.stop();
 
@@ -87,6 +79,17 @@ export class SmartSSR {
     console.log(
       `The rendering alone took ${renderTimeMeasurement.milliSeconds} milliseconds for ${urlArg}`
     );
+
+    // debug
+    if (this.options.debug) {
+      plugins.smartfile.memory.toFsSync(
+        renderedPageString,
+        plugins.path.join(paths.noGitDir, 'test.html')
+      );
+      const fs = await import('fs');
+      fs.writeFileSync(plugins.path.join(paths.noGitDir, 'test.png'), screenshotBuffer);
+    }
+
     return result;
   }
 }
