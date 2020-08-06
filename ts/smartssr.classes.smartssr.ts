@@ -16,10 +16,10 @@ export class SmartSSR {
 
   constructor(optionsArg?: ISmartSSROptions) {
     this.options = {
-      ... {
-        debug: false
+      ...{
+        debug: false,
       },
-      ...optionsArg
+      ...optionsArg,
     };
   }
 
@@ -42,17 +42,17 @@ export class SmartSSR {
     const resultDeferred = plugins.smartpromise.defer<string>();
     const context = await this.browser.createIncognitoBrowserContext();
     const page = await context.newPage();
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       console.log(`${urlArg}: ${msg.text()}`);
     });
 
     page.on('load', async (...args) => {
       await plugins.smartdelay.delayFor(5000);
       let screenshotBuffer: Buffer;
-      
+
       if (this.options.debug) {
         screenshotBuffer = await page.screenshot({
-          encoding: 'binary'
+          encoding: 'binary',
         });
       }
 
@@ -60,7 +60,7 @@ export class SmartSSR {
       const pageContent = await page.content();
       const renderedPageString = pageContent;
       resultDeferred.resolve(renderedPageString);
-      
+
       if (this.options.debug) {
         plugins.smartfile.memory.toFsSync(
           renderedPageString,
@@ -69,7 +69,6 @@ export class SmartSSR {
         const fs = await import('fs');
         fs.writeFileSync(plugins.path.join(paths.noGitDir, 'test.png'), screenshotBuffer);
       }
-
     });
 
     const renderTimeMeasurement = new plugins.smarttime.HrtMeasurement();
@@ -82,8 +81,12 @@ export class SmartSSR {
     context.close();
 
     overallTimeMeasurement.stop();
-    console.log(`Overall it took ${overallTimeMeasurement.milliSeconds} milliseconds to render ${urlArg}`);
-    console.log(`The rendering alone took ${renderTimeMeasurement.milliSeconds} milliseconds for ${urlArg}`)
+    console.log(
+      `Overall it took ${overallTimeMeasurement.milliSeconds} milliseconds to render ${urlArg}`
+    );
+    console.log(
+      `The rendering alone took ${renderTimeMeasurement.milliSeconds} milliseconds for ${urlArg}`
+    );
     return result;
   }
 }

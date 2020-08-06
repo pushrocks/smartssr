@@ -34,7 +34,7 @@ export function serializeFunction(rootNode) {
     // console.log(nodeArg.nodeName);
     if (nodeArg.shadowRoot) {
       nodeArg.setAttribute('smartssr', 'yes');
-      
+
       // lets handle the current node
       const nodeUUID = uuidv4();
 
@@ -64,7 +64,7 @@ export function serializeFunction(rootNode) {
           noteForAppending.push(childNode);
         }
       });
-      noteForAppending.forEach(childNode => {
+      noteForAppending.forEach((childNode) => {
         nodeArg.append(childNode);
       });
     } else {

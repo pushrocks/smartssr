@@ -3,8 +3,8 @@
   "version": "1.0.10",
   "private": false,
   "description": "a smart server side renderer supporting shadow dom",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist_ts/index.js",
+  "typings": "dist_ts/index.d.ts",
   "author": "Lossless GmbH",
   "license": "MIT",
   "scripts": {
@@ -32,11 +32,15 @@
     "ts/**/*",
     "ts_web/**/*",
     "dist/**/*",
-    "dist_web/**/*",
+    "dist_*/**/*",
+    "dist_ts/**/*",
     "dist_ts_web/**/*",
     "assets/**/*",
     "cli.js",
     "npmextra.json",
     "readme.md"
+  ],
+  "browserslist": [
+    "last 1 chrome versions"
   ]
 }
