@@ -1,7 +1,7 @@
 declare var document: Document;
 export function serializeFunction(rootNode) {
   const uuidv4 = () => {
-    return 'unixxxxxxxxxxx'.replace(/[xy]/g, c => {
+    return 'unixxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       const r = (Math.random() * 16) | 0;
       const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
@@ -24,55 +24,57 @@ export function serializeFunction(rootNode) {
     styleTemplate = styleTemplate.replace(/}[ \t\n]+div/g, `}\n\n.${uuidID} div`);
     return styleTemplate;
   };
+  const loopProtection: any[] = [];
 
-  function serializeNode(node: HTMLElement) {
-    if (!node.tagName.includes('-')) {
+  function serializeNode(nodeArg: HTMLElement, logThis = false) {
+    if (loopProtection.includes(nodeArg)) {
       return;
     }
-    if (node.hasAttribute('smartssr')) {
-      console.log(`${node.tagName} is already serialized`);
-      return;
-    }
-    node.setAttribute('smartssr', 'yes');
-    // lets handle the current node
-    const nodeUUID = uuidv4();
+    loopProtection.push(nodeArg);
+    // console.log(nodeArg.nodeName);
+    if (nodeArg.shadowRoot) {
+      nodeArg.setAttribute('smartssr', 'yes');
+      
+      // lets handle the current node
+      const nodeUUID = uuidv4();
 
-    try {
-      node.classList.add(nodeUUID);
+      nodeArg.classList.add(nodeUUID);
+      const slots = nodeArg.shadowRoot.querySelectorAll('slot');
+
+      // handle slot element
+      slots.forEach((slot) => {
+        nodeArg.childNodes.forEach((lightNode) => slot.parentNode.insertBefore(lightNode, slot));
+        slot.parentNode.removeChild(slot);
+      });
 
       // lets modify the css
-      const children: HTMLElement[] = node.shadowRoot.children as any;
-      for (const childElement of children) {
-        if (childElement.tagName === 'STYLE') {
-          childElement.textContent = prependCss(nodeUUID, childElement.textContent);
+      const childNodes = nodeArg.shadowRoot.childNodes;
+      // tslint:disable-next-line: prefer-for-of
+      const noteForAppending: HTMLElement[] = [];
+      childNodes.forEach((childNode) => {
+        if (childNode instanceof HTMLElement) {
+          if (childNode.tagName === 'STYLE') {
+            childNode.textContent = prependCss(nodeUUID, childNode.textContent);
+          } else {
+            if (nodeArg.tagName?.includes('ARTICLEGRID')) {
+              console.log('hello ' + childNode.id);
+            }
+            serializeNode(childNode, logThis);
+          }
+          noteForAppending.push(childNode);
         }
-        serializeFunction(childElement);
-      }
-
-      const templateDom = document.createElement('template');
-      templateDom.innerHTML = node.innerHTML;
-
-      const slot = node.shadowRoot.querySelector('slot');
-      node.childNodes.forEach(lightNode => slot.parentNode.insertBefore(lightNode, slot));
-      // remove slot element
-      if (slot) {
-        slot.parentNode.removeChild(slot);
-      }
-
-      // move shadowDom into root node
-      node.shadowRoot.childNodes.forEach(shadowNode => node.appendChild(shadowNode));
-
-      // add original lightDom as template
-      if (templateDom.innerHTML !== '') {
-        node.appendChild(templateDom);
-      }
-    } catch (err) {
-      console.log('error:', err.message);
-      console.log(node.tagName);
+      });
+      noteForAppending.forEach(childNode => {
+        nodeArg.append(childNode);
+      });
+    } else {
+      nodeArg.childNodes.forEach((nodeArg2: any) => {
+        serializeNode(nodeArg2, logThis);
+      });
     }
   }
 
-  [...rootNode.querySelectorAll('*')]
-    .filter(element => /-/.test(element.nodeName))
-    .forEach(serializeNode);
+  rootNode.childNodes.forEach((nodeArg) => {
+    serializeNode(nodeArg);
+  });
 }

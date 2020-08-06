@@ -4,7 +4,9 @@ import * as smartssr from '../ts/index';
 let testSSRInstance: smartssr.SmartSSR;
 
 tap.test('should create a valid smartssr instance', async () => {
-  testSSRInstance = new smartssr.SmartSSR();
+  testSSRInstance = new smartssr.SmartSSR({
+    debug: true
+  });
 });
 
 tap.test('should start the smartssr instance', async () => {
@@ -12,10 +14,10 @@ tap.test('should start the smartssr instance', async () => {
 });
 
 tap.test('should render central.eu', async tools => {
-  await testSSRInstance.renderPage('https://central.eu');
+  await testSSRInstance.renderPage('https://central.eu/article/5e76873b9cf69b7bf6bc78bc/Introducing%3A%20central.eu');
 });
 
-tap.test('should render lossless.com', async () => {
+tap.skip.test('should render lossless.com', async () => {
   await testSSRInstance.renderPage('https://lossless.com');
 });
 

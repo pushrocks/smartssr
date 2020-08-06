@@ -3,11 +3,26 @@ import * as paths from './smartssr.paths';
 
 import { serializeFunction } from './smartssr.function.serialize';
 
+export interface ISmartSSROptions {
+  debug: boolean;
+}
+
 /**
  *
  */
 export class SmartSSR {
   public browser: plugins.smartpuppeteer.puppeteer.Browser;
+  public options: ISmartSSROptions;
+
+  constructor(optionsArg?: ISmartSSROptions) {
+    this.options = {
+      ... {
+        debug: false
+      },
+      ...optionsArg
+    };
+  }
+
   public async start() {
     this.browser = await plugins.smartpuppeteer.getEnvAwareBrowserInstance();
   }
@@ -32,15 +47,29 @@ export class SmartSSR {
     });
 
     page.on('load', async (...args) => {
-      // await plugins.smartdelay.delayFor(2000);
+      await plugins.smartdelay.delayFor(5000);
+      let screenshotBuffer: Buffer;
+      
+      if (this.options.debug) {
+        screenshotBuffer = await page.screenshot({
+          encoding: 'binary'
+        });
+      }
+
       await page.$eval('body', serializeFunction);
       const pageContent = await page.content();
       const renderedPageString = pageContent;
       resultDeferred.resolve(renderedPageString);
-      plugins.smartfile.memory.toFsSync(
-        renderedPageString,
-        plugins.path.join(paths.noGitDir, 'test.html')
-      );
+      
+      if (this.options.debug) {
+        plugins.smartfile.memory.toFsSync(
+          renderedPageString,
+          plugins.path.join(paths.noGitDir, 'test.html')
+        );
+        const fs = await import('fs');
+        fs.writeFileSync(plugins.path.join(paths.noGitDir, 'test.png'), screenshotBuffer);
+      }
+
     });
 
     const renderTimeMeasurement = new plugins.smarttime.HrtMeasurement();
