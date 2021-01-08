@@ -13,20 +13,20 @@
     "format": "(gitzone format)"
   },
   "devDependencies": {
-    "@gitzone/tsbuild": "^2.1.24",
-    "@gitzone/tstest": "^1.0.43",
+    "@gitzone/tsbuild": "^2.1.25",
+    "@gitzone/tstest": "^1.0.52",
     "@pushrocks/smartserve": "^1.1.41",
     "@pushrocks/tapbundle": "^3.2.9",
-    "@types/node": "^14.0.27",
+    "@types/node": "^14.14.20",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.15.0"
   },
   "dependencies": {
     "@pushrocks/smartdelay": "^2.0.10",
-    "@pushrocks/smartfile": "^7.0.12",
-    "@pushrocks/smartpromise": "^3.0.6",
-    "@pushrocks/smartpuppeteer": "^1.0.15",
-    "@pushrocks/smarttime": "^3.0.24"
+    "@pushrocks/smartfile": "^8.0.8",
+    "@pushrocks/smartpromise": "^3.1.3",
+    "@pushrocks/smartpuppeteer": "^1.0.19",
+    "@pushrocks/smarttime": "^3.0.38"
   },
   "files": [
     "ts/**/*",

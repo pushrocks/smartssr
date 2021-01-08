@@ -11,7 +11,7 @@ export interface ISmartSSROptions {
  *
  */
 export class SmartSSR {
-  public browser: plugins.smartpuppeteer.puppeteer.Browser;
+  public browser: plugins.smartpuppeteer.IncognitoBrowser;
   public options: ISmartSSROptions;
 
   constructor(optionsArg?: ISmartSSROptions) {
@@ -24,12 +24,13 @@ export class SmartSSR {
   }
 
   public async start() {
-    this.browser = await plugins.smartpuppeteer.getEnvAwareBrowserInstance();
+    this.browser = new plugins.smartpuppeteer.IncognitoBrowser();
+    await this.browser.start();
   }
   public async stop() {
     if (this.browser) {
       await plugins.smartdelay.delayFor(3000);
-      await this.browser.close();
+      await this.browser.stop();
       this.browser = null;
     } else {
       console.log('browser was not in started mode');
@@ -40,7 +41,7 @@ export class SmartSSR {
     const overallTimeMeasurement = new plugins.smarttime.HrtMeasurement();
     overallTimeMeasurement.start();
     const resultDeferred = plugins.smartpromise.defer<string>();
-    const context = await this.browser.createIncognitoBrowserContext();
+    const context = await this.browser.getNewIncognitoContext();
     const page = await context.newPage();
     page.on('console', (msg) => {
       console.log(`${urlArg}: ${msg.text()}`);
