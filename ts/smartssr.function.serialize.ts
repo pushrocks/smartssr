@@ -47,11 +47,12 @@ export function serializeFunction(rootNode) {
         slotsForMove.push(slot);
       });
 
-      
       for (const slot of slotsForMove) {
         const slottedLightNodesForMove = [];
         slot.assignedNodes().forEach((lightNode) => slottedLightNodesForMove.push(lightNode));
-        slottedLightNodesForMove.forEach((lightNode) => slot.parentNode.insertBefore(lightNode, slot));
+        slottedLightNodesForMove.forEach((lightNode) =>
+          slot.parentNode.insertBefore(lightNode, slot)
+        );
       }
 
       // lets modify the css

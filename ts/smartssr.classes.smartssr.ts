@@ -66,7 +66,6 @@ export class SmartSSR {
     const renderedPageString = pageContent;
     resultDeferred.resolve(renderedPageString);
 
-
     const result = await resultDeferred.promise;
     renderTimeMeasurement.stop();
 
