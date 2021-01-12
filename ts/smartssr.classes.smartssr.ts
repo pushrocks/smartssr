@@ -71,7 +71,7 @@ export class SmartSSR {
     renderTimeMeasurement.stop();
 
     // lets clean up async
-    context.close();
+    await context.close();
 
     overallTimeMeasurement.stop();
     console.log(
