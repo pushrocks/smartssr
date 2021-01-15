@@ -69,6 +69,9 @@ export function serializeFunction(rootNode) {
           noteForAppending.push(childNode);
         }
       });
+      while(nodeArg.firstChild) {
+        nodeArg.removeChild(nodeArg.firstChild);
+      }
       noteForAppending.forEach((childNode) => {
         nodeArg.append(childNode);
       });

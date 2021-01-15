@@ -13,13 +13,13 @@ tap.test('should start the smartssr instance', async () => {
   await testSSRInstance.start();
 });
 
-tap.skip.test('should render central.eu', async (tools) => {
+tap.test('should render central.eu', async (tools) => {
   await testSSRInstance.renderPage(
-    'https://central.eu/article/5e76873b9cf69b7bf6bc78bc/Introducing%3A%20central.eu'
+    'https://in.work'
   );
 });
 
-tap.test('should render lossless.com', async () => {
+tap.skip.test('should render lossless.com', async () => {
   await testSSRInstance.renderPage('https://lossless.com');
 });
 
