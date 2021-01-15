@@ -51,7 +51,7 @@ export class SmartSSR {
     renderTimeMeasurement.start();
     await page.goto(urlArg, {
       waitUntil: 'networkidle2',
-      timeout: 30000
+      timeout: 30000,
     });
 
     let screenshotBuffer: Buffer;
