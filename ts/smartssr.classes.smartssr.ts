@@ -43,6 +43,17 @@ export class SmartSSR {
     const resultDeferred = plugins.smartpromise.defer<string>();
     const context = await this.browser.getNewIncognitoContext();
     const page = await context.newPage();
+
+    // lets protext against left open tabs
+    plugins.smartdelay.delayFor(30000).then(() => {
+      if (!page.isClosed) {
+        page.close();
+        context.close();
+        throw new Error(`failed to render ${urlArg}`);
+      }
+      
+    });
+
     page.on('console', (msg) => {
       console.log(`${urlArg}: ${msg.text()}`);
     });
@@ -71,6 +82,7 @@ export class SmartSSR {
     renderTimeMeasurement.stop();
 
     // lets clean up async
+    await page.close();
     await context.close();
 
     overallTimeMeasurement.stop();
