@@ -63,10 +63,12 @@ export function serializeFunction(rootNode) {
       const noteForAppending: HTMLElement[] = [];
 
       // lets care about static css first
-      if ((nodeArg.constructor as any).styles?.cssText) {
-        const styleTag = document.createElement('style');
-        styleTag.textContent = prependCss(nodeUUID, (nodeArg.constructor as any).styles.cssText);
-        noteForAppending.push(styleTag);
+      if ((nodeArg.constructor as any).styles && (nodeArg.constructor as any).styles instanceof Array) {
+        for (const objectArg of (nodeArg.constructor as any).styles) {
+          const styleTag = document.createElement('style');
+          styleTag.textContent = prependCss(nodeUUID, objectArg.cssText);
+          noteForAppending.push(styleTag);
+        }
       }
 
       childNodes.forEach((childNode) => {
