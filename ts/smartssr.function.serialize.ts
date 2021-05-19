@@ -39,6 +39,8 @@ export function serializeFunction(rootNode) {
       const nodeUUID = uuidv4();
 
       nodeArg.classList.add(nodeUUID);
+
+      // find all slots
       const slots = nodeArg.shadowRoot.querySelectorAll('slot');
 
       // handle slot element
@@ -59,6 +61,14 @@ export function serializeFunction(rootNode) {
       const childNodes = nodeArg.shadowRoot.childNodes;
       // tslint:disable-next-line: prefer-for-of
       const noteForAppending: HTMLElement[] = [];
+
+      // lets care about static css first
+      if ((nodeArg.constructor as any).styles?.cssText) {
+        const styleTag = document.createElement('style');
+        styleTag.textContent = prependCss(nodeUUID, (nodeArg.constructor as any).styles.cssText);
+        noteForAppending.push(styleTag);
+      }
+
       childNodes.forEach((childNode) => {
         if (childNode instanceof HTMLElement) {
           if (childNode.tagName === 'STYLE') {
